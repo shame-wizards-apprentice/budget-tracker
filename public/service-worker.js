@@ -1,10 +1,5 @@
-const CACHE_NAME = "static-cache-v2";
-const DATA_CACHE_NAME = "data-cache-v1";
-
-const staticFilesToPreCache = [
+const FILES_TO_CACHE = [
     "/",
-    "/db.js",
-    "/index.js",
     "/index.html",
     "/styles.css",
     "/manifest.webmanifest",
@@ -12,13 +7,16 @@ const staticFilesToPreCache = [
     "/icons/icon-512x512.png"
 ]
 
+const CACHE_NAME = "static-cache-v2";
+const DATA_CACHE_NAME = "data-cache-v1";
+
 
 // install
 self.addEventListener("install", function (evt) {
     evt.waitUntil(
         caches.open(CACHE_NAME).then(cache => {
             console.log("Your files were pre-cached successfully!");
-            return cache.addAll(staticFilesToPreCache);
+            return cache.addAll(FILES_TO_CACHE);
         })
     );
 
@@ -45,15 +43,14 @@ self.addEventListener("activate", function (evt) {
 
 // fetch
 self.addEventListener("fetch", function (evt) {
-    const { url } = evt.request;
-    if (url.includes("/api")) {
+    if (evt.request.url.includes("/api/")) {
         evt.respondWith(
             caches.open(DATA_CACHE_NAME).then(cache => {
                 return fetch(evt.request)
                     .then(response => {
                         // If the response was good, clone it and store it in the cache.
                         if (response.status === 200) {
-                            cache.post(evt.request, response.clone());
+                            cache.put(evt.request.url, response.clone());
                         }
 
                         return response;
@@ -64,14 +61,15 @@ self.addEventListener("fetch", function (evt) {
                     });
             }).catch(err => console.log(err))
         );
-    } else {
-        // respond from static cache, request is not for /api/*
-        evt.respondWith(
-            caches.open(CACHE_NAME).then(cache => {
-                return cache.match(evt.request).then(response => {
-                    return response || fetch(evt.request);
-                });
-            })
-        );
+        // } else {
+        return;
     }
+    // respond from static cache, request is not for /api/*
+    evt.respondWith(
+        caches.match(evt.request).then(response => {
+            return response || fetch(evt.request);
+        })
+    );
 });
+
+
