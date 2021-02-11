@@ -12,13 +12,15 @@ An app for tracking your monthly budget and all transactions, usable offline and
 
 Enter the name and amount for each transaction in the corresponding text input. To add funds, click "add funds." To subtract funds, click "subtract funds." Your total above will change in real time to reflect each transaction, and if you're using the app offline, all transactions will be saved to browser storage and added to the database the next time you're connected to the internet.
 
-![Despensa Landing Page](/images/browser.png?raw=true "Browser")
 
 Browser view
 
-![Add Food](/images/pwa.png?raw=true "Downloaded PWA")
+![Browser View](/images/browser.png?raw=true "Browser")
 
 Downloaded PWA
+
+![Downloaded PWA](/images/pwa.png?raw=true "Downloaded PWA")
+
 
 
 ## Built With:
